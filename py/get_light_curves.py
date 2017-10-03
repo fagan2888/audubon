@@ -17,8 +17,8 @@ if __name__ == "__main__":
     
     # -- get the file list
     ind   = int(sys.argv[1])
-    st    = datetime.datetime.strptime(sys.argv[2], "%Y-%m-%d %H:%M:%S")
-    en    = datetime.datetime.strptime(sys.argv[3], "%Y-%m-%d %H:%M:%S")
+    st    = datetime.datetime.strptime(sys.argv[2], "%Y-%m-%d_%H:%M:%S")
+    en    = datetime.datetime.strptime(sys.argv[3], "%Y-%m-%d_%H:%M:%S")
     tname = os.path.join("..", "output", "april_file_list.csv")
     times = pd.read_csv(tname, parse_dates=["datetime"])
     tind  = (times.datetime >= st) & (times.datetime < en)
