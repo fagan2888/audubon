@@ -29,3 +29,15 @@ def get_filelist(st, en):
                      glob.glob(os.path.join(bpath, j, "*d6*.png"))])
 
 
+
+def get_bbls():
+    """ Get BBLs from bbl image. """
+
+
+    # -- read in the bbls
+    bbls  = np.rot90(np.load(os.path.join("..", "output", "bbls_test.npy")) \
+                         .astype(int))
+    blist = np.sort(np.unique(bbls[bbls > 0]))
+    nbbl  = len(blist)
+
+    return bbls, blist, nbbl
