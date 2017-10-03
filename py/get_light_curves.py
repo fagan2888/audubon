@@ -11,38 +11,19 @@ import pandas as pd
 import scipy.ndimage.measurements as ndm
 from scipy.misc import imread
 
-def get_filelist(st, en):
-    """ Get the file list between start and end times. """
-
-    # -- get directory list
-    dirs = np.array(sorted([os.path.basename(i) for i in glob.glob( \
-                    os.path.join(os.environ["AUDUBON_DATA"], "2017*_night"))]))
-
-    # -- pull dates off of directory names
-    dirt = np.array([datetime.datetime.strptime(i, "%Y-%m-%d_night") 
-                     for i in dirs])
-
-    # -- sub-select directories
-    dirs = dirs[(dirt >= st) & (dirt < en)]
-
-    # -- return the image file list
-    bpath = os.environ["AUDUBON_DATA"]
-
-    return np.array([i for j in dirs for i in 
-                     glob.glob(os.path.join(bpath, j, "*d6*.png"))])
-
-
 if __name__ == "__main__":
 
     t0  = time.time()
     
     # -- get the file list
-    ind  = int(sys.argv[1])
-    st    = datetime.datetime.strptime(sys.argv[2], "%Y-%m-%d")
-    en    = datetime.datetime.strptime(sys.argv[3], "%Y-%m-%d")
-    #st    = datetime.datetime(2017, 4, 1)
-    #en    = datetime.datetime(2017, 5, 1)
-    flist = get_filelist(st, en)
+    ind   = int(sys.argv[1])
+    st    = datetime.datetime.strptime(sys.argv[2], "%Y-%m-%d %H:%M:%S")
+    en    = datetime.datetime.strptime(sys.argv[3], "%Y-%m-%d %H:%M:%S")
+    tname = os.path.join("..", "output", "april_file_list.csv")
+    times = pd.read_csv(tname, parse_dates=["datetime"])
+    tind  = (times.datetime >= st) & (times.datetime < en)
+    times = times[tind]
+    flist = times.filename.values
     nobs  = flist.size
     
     
@@ -53,9 +34,9 @@ if __name__ == "__main__":
     
     
     # -- set the ouput file name and initialize the log
-    oname = os.path.join("..", "output", "light_curves_d6_{0:04}.npy" \
+    oname = os.path.join("..", "output", "light_curves_d6G_sort_{0:04}.npy" \
                              .format(ind))
-    lname = os.path.join("..", "output", "light_curves_d6_{0:04}.log" \
+    lname = os.path.join("..", "output", "light_curves_d6G_sort_{0:04}.log" \
                              .format(ind))
     lopen = open(lname, "w")
     lopen.write("Extracting lightcurves for {0} observations...\n========\n" \
